@@ -4,7 +4,7 @@
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
+    android:background="#ffffff"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     tools:context="com.briccsquad.mobileportail.LoginActivity">
@@ -39,33 +39,33 @@
                 android:text="Portail des Élèves"
                 android:layout_marginBottom="20dp"
                 android:textAlignment="center"
-                android:textColor="#FFFFFF"
+                android:textColor="#000000"
                 android:visibility="visible" />
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="wrap_content"
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            app:hintEnabled="false">
+
+            <EditText
+                android:id="@+id/uname"
+                android:layout_width="210dp"
                 android:layout_height="wrap_content"
-                app:hintEnabled="false"
-                android:gravity="center">
+                android:background="#EDEDED"
+                android:hint=" Username"
+                android:inputType="text"
+                android:maxLines="1"
+                android:paddingBottom="5dp"
+                android:paddingStart="2dp"
+                android:paddingTop="5dp"
+                android:singleLine="true"
+                android:textColor="#111111"
+                android:textColorHint="#898989" />
 
-                <EditText
-                    android:id="@+id/uname"
-                    android:paddingStart="2dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:layout_width="210dp"
-                    android:layout_height="wrap_content"
-                    android:background="#EDEDED"
-                    android:hint="@string/prompt_username"
-                    android:textColor="#111111"
-                    android:textColorHint="#898989"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:singleLine="true" />
+        </android.support.design.widget.TextInputLayout>
 
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
+        <android.support.design.widget.TextInputLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -80,7 +80,7 @@
                     android:layout_width="210dp"
                     android:layout_height="wrap_content"
                     android:background="#EDEDED"
-                    android:hint="@string/prompt_password"
+                    android:hint=" Password"
                     android:textColor="#111111"
                     android:textColorHint="#898989"
                     android:imeActionId="6"
@@ -97,8 +97,9 @@
                 style="?android:textAppearanceMediumInverse"
                 android:layout_width="210dp"
                 android:layout_height="wrap_content"
-                android:background="@android:color/holo_blue_light"
+                android:background="#0d2c6c"
                 android:text="@string/action_sign_in_short"
+                android:textColor="#FFFFFF"
                 android:textStyle="bold" />
 
         </LinearLayout>
