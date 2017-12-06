@@ -36,8 +36,9 @@
         android:layout_height="458dp"
         android:layout_gravity="center"
         android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingTop="120dp">
 
         <TextView
             android:id="@+id/textView"
