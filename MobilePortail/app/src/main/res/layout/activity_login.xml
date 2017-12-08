@@ -4,6 +4,7 @@
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="false"
     android:background="#ffffff"
     android:orientation="vertical"
     android:paddingLeft="16dp"
@@ -35,10 +36,10 @@
         android:layout_width="match_parent"
         android:layout_height="458dp"
         android:layout_gravity="center"
-        android:layout_weight="1"
+        android:layout_weight="0"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingTop="120dp">
+        android:paddingTop="100dp">
 
         <TextView
             android:id="@+id/textView"
@@ -50,7 +51,7 @@
             android:text="Portail des Élèves"
             android:textAlignment="center"
             android:textColor="#000000"
-            android:textSize="28sp"
+            android:textSize="32sp"
             android:visibility="visible" />
 
         <android.support.design.widget.TextInputLayout
@@ -61,16 +62,19 @@
 
             <EditText
                 android:id="@+id/uname"
-                android:layout_width="240dp"
-                android:layout_height="40dp"
-                android:background="#EDEDED"
-                android:hint=" Username"
+                android:layout_width="300dp"
+                android:layout_height="50dp"
+                android:background="#ededed"
+                android:hint="Username"
+                android:includeFontPadding="true"
                 android:inputType="text"
                 android:maxLines="1"
                 android:paddingBottom="5dp"
-                android:paddingStart="2dp"
                 android:paddingTop="5dp"
+                android:paddingStart="8dp"
+                android:selectAllOnFocus="false"
                 android:singleLine="true"
+                android:textSize="20sp"
                 android:textColor="#111111"
                 android:textColorHint="#898989" />
 
@@ -85,19 +89,20 @@
 
             <EditText
                 android:id="@+id/password"
-                android:layout_width="240dp"
-                android:layout_height="40dp"
-                android:background="#EDEDED"
-                android:hint=" Password"
+                android:layout_width="300dp"
+                android:layout_height="50dp"
+                android:background="#ededed"
+                android:hint="Password"
                 android:imeActionId="6"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:paddingBottom="5dp"
-                android:paddingStart="2dp"
+                android:paddingStart="8dp"
                 android:paddingTop="5dp"
                 android:singleLine="true"
+                android:textSize="20sp"
                 android:textColor="#111111"
                 android:textColorHint="#898989" />
 
@@ -106,11 +111,12 @@
         <Button
             android:id="@+id/uname_sign_in_button"
             style="?android:textAppearanceMediumInverse"
-            android:layout_width="240dp"
-            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:layout_height="65dp"
             android:background="#0d2c6c"
             android:text="@string/action_sign_in_short"
             android:textColor="#FFFFFF"
+            android:textSize="22sp"
             android:textStyle="bold" />
 
     </LinearLayout>
