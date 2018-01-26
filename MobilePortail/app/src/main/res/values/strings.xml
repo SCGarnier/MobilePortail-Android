@@ -12,4 +12,7 @@
     <string name="action_logout">Log Out</string>
     <string name="class_avg">Moyenne</string>
     <string name="class_name">Nom du Cours</string>
+    <!--Other stuff-->
+    <string name="urlInfoEcole">https://apps.csdccs.edu.on.ca/PortailEleves/InfoEcole.aspx</string>
+
 </resources>
