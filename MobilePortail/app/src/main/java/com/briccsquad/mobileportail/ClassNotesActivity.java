@@ -9,14 +9,21 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import net.sf.andpdf.pdfviewer.PdfViewerActivity;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 // TODO: Add tabbed activity for notes and schedule
 public class ClassNotesActivity extends AppCompatActivity {
@@ -32,9 +39,7 @@ public class ClassNotesActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 // Just quickly quit
-                Intent itt = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(itt);
-
+                finish();
                 return false;
             }
         });
@@ -42,7 +47,7 @@ public class ClassNotesActivity extends AppCompatActivity {
         return true;
     }
 
-    private void generateTableView(String tname, String avg, String bgColor){
+    private void generateTableView(String tname, ArrayList<String> avg, final String fname, boolean inc, String bgColor){
         // Create table row for displaying text on activity
         TableRow tabr = new TableRow(this);
         tabr.setLayoutParams(new TableRow.LayoutParams(
@@ -65,9 +70,20 @@ public class ClassNotesActivity extends AppCompatActivity {
         // Create text view for class average
         TextView dispClassAvg = new TextView(this);
         dispClassAvg.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2));
-        dispClassAvg.setText((avg != null) ? avg : "N/A");
+        dispClassAvg.setText((avg != null) ? avg.toString() : "N/A");
         dispClassAvg.setGravity(Gravity.CENTER);
         if(avg == null) dispClassAvg.setTypeface(null, Typeface.BOLD);
+
+        if(inc){
+            tabr.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent itt = new Intent(getApplicationContext(), SummaryViewActivity.class);
+                    itt.putExtra(PdfViewerActivity.EXTRA_PDFFILENAME, fname);
+                    startActivity(itt);
+                }
+            });
+        }
 
         // Add text to row
         tabr.addView(dispClassName);
@@ -85,6 +101,9 @@ public class ClassNotesActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         tl = findViewById(R.id.table_layout_notes);
+
+        // Gte list of summary PDFs
+        final String[] pdfFileList = getIntent().getStringArrayExtra("sumdocs");
 
         // Extract HTML from string result
         Document doc = Jsoup.parse(getIntent().getStringExtra("reqval"));
@@ -108,6 +127,9 @@ public class ClassNotesActivity extends AppCompatActivity {
             // Select element containing teacher and class info
             Element nextClassElem, classElem = classData.selectFirst("div.text");
 
+            // Is the student still in the class?
+            final boolean inClass = (classData.selectFirst("font") == null);
+
             try {
                 nextClassElem = elemList.get(i + 1);
             } catch(IndexOutOfBoundsException e){
@@ -115,7 +137,7 @@ public class ClassNotesActivity extends AppCompatActivity {
             }
 
             // String for class average; pass to table generator
-            String classAvg = null;
+            final ArrayList<String> classAvgList = new ArrayList<>();
 
             // Get full class ID string
             String className = classElem.text();
@@ -129,7 +151,7 @@ public class ClassNotesActivity extends AppCompatActivity {
             if (nextClassElem != null && nextClassElem.selectFirst("div.text") == null) {
                 Element domainData = classData.select("td").get(1);
                 Element domainNoteElem = classData;
-                classAvg = "";
+                classAvgList.clear();
 
                 for(++i; i < l; i++){
 
@@ -143,7 +165,7 @@ public class ClassNotesActivity extends AppCompatActivity {
                     // Get next average for the sum
                     String nextAvg = (nextAvgElem == null) ? "n" : nextAvgElem.text();
 
-                    classAvg += nextAvg + " ; ";
+                    classAvgList.add(nextAvg);
 
                     // Select next element for the next iteration
                     domainNoteElem = elemList.get(i);
@@ -154,11 +176,11 @@ public class ClassNotesActivity extends AppCompatActivity {
                 Element elemAvg = classData.selectFirst("a");
 
                 if (elemAvg != null) {
-                    classAvg = elemAvg.text();
+                    classAvgList.add(elemAvg.text());
                 }
             }
 
-            generateTableView(className, classAvg, ((j++) % 2 == 0) ? "#DDDDDD" : "#EEEEEE");
+            generateTableView(className, classAvgList, pdfFileList[j], inClass,((j++) % 2 == 0) ? "#DDDDDD" : "#EEEEEE");
         }
     }
 }
