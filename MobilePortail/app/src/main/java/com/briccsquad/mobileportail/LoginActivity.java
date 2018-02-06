@@ -5,7 +5,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,12 +21,28 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A login screen that offers login via uname/password.
@@ -51,6 +69,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
+    private static final Pattern pdfUrlPattern = Pattern.compile("open\\('(.*)'\\);");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,40 +197,109 @@ public class LoginActivity extends AppCompatActivity {
 
         private final String mUname;
         private final String mPassword;
-        private String mPortailRes;
+        private String mPortailSchedule;
+        private String mPortailGrades;
+        private final ArrayList<String> mPortailSummaries = new ArrayList<>();
 
         UserLoginTask(String uname, String password) {
             mUname = uname;
             mPassword = password;
         }
 
+        private Document loadPage(final String extra){
+            try {
+                Document tmp = Jsoup.connect("https://apps.cscmonavenir.ca/PortailEleves/index.aspx?ReturnUrl=" + extra)
+                        .data(paramDict)
+                        .timeout(4000)
+                        .followRedirects(true)
+                        .post();
+
+                // Check if credentials were wrong
+                if(tmp.title().contains("portail")){
+                    System.err.println("Got title page, returning null...");
+                    return null;
+                }
+
+                return tmp;
+            } catch(IOException e) {
+                System.err.println("Error processing request: " + e.getMessage());
+                return null;
+            }
+        }
+
         @Override
         protected Boolean doInBackground(Void... params) {
-            // Attempt authentication using portail's server.
-            final String url = "https://apps.cscmonavenir.ca/PortailEleves/index.aspx";
-            Document rawResponse = null;
-
             // Add username and password to dictionary
             paramDict.put("Tlogin", mUname);
             paramDict.put("Tpassword", mPassword);
 
+            // Attempt authentication using portail's server.
             try {
-                rawResponse = Jsoup.connect(url)
-                        .data(paramDict)
-                        .timeout(3000)
-                        .post();
-            } catch(IOException e) {
-                System.err.println("Error processing request: " + e.getMessage());
+                Document pageSchedule = loadPage("%2fPortailEleves%2fEmploiDuTemps.aspx");
+                Document pageGrades = loadPage("%2fPortailEleves%2fAccueilEleve.aspx");
+
+                Elements linkList = pageGrades.select("#Table1 a");
+                DefaultHttpClient httpClient = new DefaultHttpClient();
+
+                for(int i = 0; i < linkList.size(); i++){
+                    Element el = linkList.get(i);
+
+                    final Matcher m = pdfUrlPattern.matcher(el.attr("onclick"));
+                    if(m.find()){
+                        String fname = "sum" + i + ".pdf";
+
+                        // Get PDF from the server
+                        byte[] inp;
+
+                        try {
+                            HttpPost httpPost = new HttpPost("https://apps.cscmonavenir.ca/PortailEleves/index.aspx?ReturnUrl=" +
+                                    Uri.encode(m.group(1)));
+
+                            ArrayList<NameValuePair> modParams = new ArrayList<NameValuePair>();
+                            for(Map.Entry<String, String> entry: paramDict.entrySet()){
+                                modParams.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+                            }
+
+                            // TODO: Fix dependencies
+                            httpPost.setEntity(new UrlEncodedFormEntity(modParams));
+                            CloseableHttpResponse resp = httpClient.execute(httpPost);
+                            InputStream inputStream = resp.getEntity().getContent();
+                            inp = new byte[(int) resp.getEntity().getContentLength()];
+                            inputStream.read(inp);
+                            inputStream.close();
+                        } catch(IOException e){
+                            e.printStackTrace();
+                            return false;
+                        }
+
+                        // Write the response to a file
+                        try {
+                            FileOutputStream fos = openFileOutput(fname, Context.MODE_PRIVATE);
+                            fos.write(inp);
+                            fos.close();
+                        } catch (IOException e){
+                            e.printStackTrace();
+                            return false;
+                        }
+
+                        // Add to the tracked files
+                        mPortailSummaries.add(new File(getFilesDir().toString(), fname).toString());
+                    } else {
+                        // Uh... what?
+                        System.err.println("Could not find document URL in attribute.");
+                        return false;
+                    }
+                }
+
+                httpClient.close();
+
+                mPortailSchedule = pageSchedule.html();
+                mPortailGrades = pageGrades.html();
+            } catch(NullPointerException e){
+                e.printStackTrace();
                 return false;
             }
 
-            // Check if credentials were wrong
-            if(rawResponse.title().contains("portail")){
-                System.err.println("Wrong credentials provided!");
-                return false;
-            }
-
-            mPortailRes = rawResponse.html();
             return true;
         }
 
@@ -231,7 +320,9 @@ public class LoginActivity extends AppCompatActivity {
 
             // Go display class notes and other stuff
             Intent itt = new Intent(getApplicationContext(), ClassNotesActivity.class);
-            itt.putExtra("reqval", mPortailRes);
+            itt.putExtra("source grades", mPortailGrades);
+            itt.putExtra("source timetable", mPortailSchedule);
+            itt.putExtra("sumdocs", mPortailSummaries.toArray(new String[mPortailSummaries.size()]));
             startActivity(itt);
         }
 
