@@ -1,17 +1,20 @@
 package com.briccsquad.mobileportail;
 
 public class checkGarnier {
-    Document infoEcole = Jsoup.connect(urlInfoEcole)
-            .post();
-
-    Node nomEcole = infoEcole.select("span#LNomEcole").text();
-    if (nomEcole.text()=="ÉSC Saint-Charles-Garnier - Whitby")
-        {
+    private static void {
+        Document infoEcole = Jsoup.connect(urlInfoEcole)
+                .post();
+        
+        Node nomEcole = infoEcole.select("span#LNomEcole").text();
+        if (nomEcole.text()=="ÉSC Saint-Charles-Garnier - Whitby")
+            {
             //code for true
-        }
-        else{
+            }
+            else{
             //code for false
-        };
+            };
+
+    }
 
 }
 /* FML */
