@@ -4,7 +4,7 @@ public class checkGarnier {
     Document infoEcole = Jsoup.connect(urlInfoEcole)
             .post();
 
-    Node nomEcole = infoEcole.select("span#LNomEcole").text();
+    Element nomEcole = infoEcole.select("span#LNomEcole.text").text();
     if (nomEcole.text()=="ÉSC Saint-Charles-Garnier - Whitby")
         {
             //code for true
