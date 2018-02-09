@@ -106,11 +106,10 @@
             android:layout_width="300dp"
             android:layout_height="65dp"
             android:background="#0d2c6c"
-            android:text="action_sign_in_short"
+            android:text="@string/action_sign_in_short"
             android:textColor="#FFFFFF"
             android:textSize="22sp"
             android:textStyle="bold"
-            tools:text="@string/action_sign_in_short" />
 
     </LinearLayout>
 

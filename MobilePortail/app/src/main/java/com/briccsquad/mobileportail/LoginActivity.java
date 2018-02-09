@@ -342,6 +342,8 @@ public class LoginActivity extends AppCompatActivity {
             //Could use help ----> If 'fromGarnier'==true, then show the news tab
             if (fromGarnier == true){
     //            itt.putExtra("")
+            } else {
+
             }
             startActivity(itt);
         }
