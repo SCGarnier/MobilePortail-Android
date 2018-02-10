@@ -318,32 +318,11 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            public static void checkGarnier {
-                // Is the student from Garnier?
-                boolean fromGarnier;
-                Document infoEcole = Jsoup.connect(urlInfoEcole)
-                        .post();
-
-                Node nomEcole = infoEcole.select("span#LNomEcole").text();
-                if (nomEcole == "ÉSC Saint-Charles-Garnier - Whitby") {
-                    fromGarnier = true;
-                } else {
-                    fromGarnier = false;
-                }
-
-            }
-
             // Go display class notes and other stuff
             Intent itt = new Intent(getApplicationContext(), ClassNotesActivity.class);
             itt.putExtra("source grades", mPortailGrades);
             itt.putExtra("source timetable", mPortailSchedule);
             itt.putExtra("sumdocs", mPortailSummaries.toArray(new String[mPortailSummaries.size()]));
-
-            //Could use help ----> If 'fromGarnier'==true, then show the news tab
-            if (fromGarnier == true){
-    //            itt.putExtra("")
-            } else {
-
             }
             startActivity(itt);
         }

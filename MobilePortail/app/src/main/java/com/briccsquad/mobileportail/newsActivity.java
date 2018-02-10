@@ -10,7 +10,7 @@ public class newsActivity {
         // School state (open, closed) and buses use the same class name ----- We need to parse into a list
         // Can we replace Node with array somehow?
 
-        Node autobusGarnier = siteGarnier.select("li.list-group-item list-group-item-success").text();
+        Node autobusGarnier = siteGarnier.select("li.list-group-item li.list-group-item-success").text();
 
 
         String ecoleOuverte;
