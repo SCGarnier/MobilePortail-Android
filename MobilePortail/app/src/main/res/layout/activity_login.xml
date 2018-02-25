@@ -21,8 +21,7 @@
         android:layout_height="120dp"
         android:layout_weight="5"
         android:adjustViewBounds="false"
-        android:src="MobilePortail/app/src/main/res/colour_fulllogo.png"
-        app:srcCompat="@drawable/fulllogo" />
+        android:src="@drawable/colour_fulllogo" />
 
     <LinearLayout
         android:id="@+id/login_form"
@@ -40,7 +39,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:autoText="false"
             android:text="Portail des Élèves"
             android:textAlignment="center"
             android:textColor="#000000"
@@ -51,7 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            app:hintEnabled="false">>
+            app:hintEnabled="false">
             <EditText
                 android:id="@+id/uname"
                 android:layout_width="300dp"
@@ -109,7 +107,7 @@
             android:text="@string/action_sign_in_short"
             android:textColor="#FFFFFF"
             android:textSize="22sp"
-            android:textStyle="bold"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

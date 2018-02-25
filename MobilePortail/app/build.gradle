@@ -32,6 +32,7 @@ android {
 }
 
 dependencies {
+    compile group: 'org.apache.httpcomponents' , name: 'httpclient-android' , version: '4.3.5.1'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support:design:26.1.0'
@@ -41,11 +42,4 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation files('libs/jsoup-1.11.1.jar')
     implementation files('libs/PdfViewer.jar')
-    implementation files('libs/commons-codec-1.10.jar')
-    implementation files('libs/commons-logging-1.2.jar')
-    implementation files('libs/fluent-hc-4.5.5.jar')
-    implementation files('libs/httpclient-4.5.5.jar')
-    implementation files('libs/httpclient-cache-4.5.5.jar')
-    implementation files('libs/httpcore-4.4.9.jar')
-    implementation files('libs/httpmime-4.5.5.jar')
 }

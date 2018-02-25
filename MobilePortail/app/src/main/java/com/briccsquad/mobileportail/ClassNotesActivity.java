@@ -102,11 +102,11 @@ public class ClassNotesActivity extends AppCompatActivity {
 
         tl = findViewById(R.id.table_layout_notes);
 
-        // Gte list of summary PDFs
+        // Get list of summary PDFs
         final String[] pdfFileList = getIntent().getStringArrayExtra("sumdocs");
 
         // Extract HTML from string result
-        Document doc = Jsoup.parse(getIntent().getStringExtra("reqval"));
+        Document doc = Jsoup.parse(getIntent().getStringExtra("source grades"));
 
         // Get relevant structure
         final Element notesTable = doc.selectFirst("#Table1");
@@ -180,7 +180,7 @@ public class ClassNotesActivity extends AppCompatActivity {
                 }
             }
 
-            generateTableView(className, classAvgList, pdfFileList[j], inClass,((j++) % 2 == 0) ? "#DDDDDD" : "#EEEEEE");
+            generateTableView(className, classAvgList, pdfFileList[j], inClass, ((j++) % 2 == 0) ? "#DDDDDD" : "#EEEEEE");
         }
     }
 }

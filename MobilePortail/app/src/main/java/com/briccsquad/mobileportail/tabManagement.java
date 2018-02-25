@@ -45,7 +45,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SchoolCheckGarnier {
+/*public class SchoolCheckGarnier {
     public static void checkGarnier
 
         boolean fromGarnier;
@@ -97,4 +97,4 @@ private class listActivityNav extends Activity {
 
     }
 }
-\
+*/

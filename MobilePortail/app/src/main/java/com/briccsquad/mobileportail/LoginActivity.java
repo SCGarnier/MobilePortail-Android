@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
     // UI references.
     private EditText mUnameView;
     private EditText mPasswordView;
-    private View mProgressView;
+    //private View mProgressView;
     private View mLoginFormView;
 
     private static final Pattern pdfUrlPattern = Pattern.compile("open\\('(.*)'\\);");
@@ -101,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+        //mProgressView = findViewById(R.id.login_progress);
     }
 
     /**
@@ -172,18 +172,18 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
 
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
+            //mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            /*mProgressView.animate().setDuration(shortAnimTime).alpha(
                     show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
                 }
-            });
+            });*/
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            //mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
@@ -262,7 +262,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             // TODO: Fix dependencies
                             httpPost.setEntity(new UrlEncodedFormEntity(modParams));
-                            CloseableHttpResponse resp = httpClient.execute(httpPost);
+                            HttpResponse resp = httpClient.execute(httpPost);
                             InputStream inputStream = resp.getEntity().getContent();
                             inp = new byte[(int) resp.getEntity().getContentLength()];
                             inputStream.read(inp);
@@ -291,7 +291,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }
 
-                httpClient.close();
+                //httpClient.close();
 
                 mPortailSchedule = pageSchedule.html();
                 mPortailGrades = pageGrades.html();
@@ -323,7 +323,6 @@ public class LoginActivity extends AppCompatActivity {
             itt.putExtra("source grades", mPortailGrades);
             itt.putExtra("source timetable", mPortailSchedule);
             itt.putExtra("sumdocs", mPortailSummaries.toArray(new String[mPortailSummaries.size()]));
-            }
             startActivity(itt);
         }
 
