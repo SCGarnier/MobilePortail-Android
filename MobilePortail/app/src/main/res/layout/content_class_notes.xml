@@ -37,5 +37,6 @@
                 android:text="@string/class_avg"
                 android:textAlignment="center" />
         </TableRow>
+
     </TableLayout>
 </android.support.v4.widget.NestedScrollView>

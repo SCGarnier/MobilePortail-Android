@@ -6,10 +6,10 @@
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_field_required">This field is required</string>
     <string name="prompt_username">Username</string>
-    <string name="err_try_again">Oops! Something went wrong. Please try again.</string>
+    <string name="err_try_again">Oups! Une erreur c\'est produite. Veuillez réessayez.</string>
 
     <string name="title_activity_class_notes">Notes de Cours</string>
-    <string name="action_logout">Log Out</string>
+    <string name="action_logout">Terminé</string>
     <string name="class_avg">Moyenne</string>
     <string name="class_name">Nom du Cours</string>
     <!--Other stuff-->

@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.RedirectHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -67,7 +68,6 @@ public class LoginActivity extends AppCompatActivity {
     // UI references.
     private EditText mUnameView;
     private EditText mPasswordView;
-    //private View mProgressView;
     private View mLoginFormView;
 
     private static final Pattern pdfUrlPattern = Pattern.compile("open\\('(.*)'\\);");
@@ -76,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         // Set up the login form.
         mUnameView = findViewById(R.id.uname);
 
@@ -101,7 +102,6 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         mLoginFormView = findViewById(R.id.login_form);
-        //mProgressView = findViewById(R.id.login_progress);
     }
 
     /**
@@ -255,7 +255,7 @@ public class LoginActivity extends AppCompatActivity {
                             HttpPost httpPost = new HttpPost("https://apps.cscmonavenir.ca/PortailEleves/index.aspx?ReturnUrl=" +
                                     Uri.encode(m.group(1)));
 
-                            ArrayList<NameValuePair> modParams = new ArrayList<NameValuePair>();
+                            ArrayList<NameValuePair> modParams = new ArrayList<>();
                             for(Map.Entry<String, String> entry: paramDict.entrySet()){
                                 modParams.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
                             }
@@ -291,8 +291,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }
 
-                //httpClient.close();
-
                 mPortailSchedule = pageSchedule.html();
                 mPortailGrades = pageGrades.html();
             } catch(NullPointerException e){
@@ -319,11 +317,14 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             // Go display class notes and other stuff
-            Intent itt = new Intent(getApplicationContext(), ClassNotesActivity.class);
-            itt.putExtra("source grades", mPortailGrades);
-            itt.putExtra("source timetable", mPortailSchedule);
-            itt.putExtra("sumdocs", mPortailSummaries.toArray(new String[mPortailSummaries.size()]));
-            startActivity(itt);
+            Session.portailGradesContent = mPortailGrades;
+            Session.portailScheduleContent = mPortailSchedule;
+            Session.portailSumPages = mPortailSummaries;
+
+            Session.computeGradesData();
+            Session.computeScheduleData();
+
+            startActivity(new Intent(getApplicationContext(), ScheduleActivity.class));
         }
 
         @Override
