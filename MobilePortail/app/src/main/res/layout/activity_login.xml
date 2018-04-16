@@ -1,27 +1,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:fitsSystemWindows="true"
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="false"
     android:background="#ffffff"
+    android:fitsSystemWindows="true"
     android:orientation="vertical"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    tools:context="com.briccsquad.mobileportail.LoginActivity"
-    android:theme="@style/AppTheme.NoActionBar">
+    tools:context="com.briccsquad.mobileportail.LoginActivity">
 
     <!-- Login progress -->
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="120dp"
-        android:layout_weight="5"
-        android:adjustViewBounds="false"
-        android:src="@drawable/colour_fulllogo" />
+        android:id="@+id/imageView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:contentDescription="@string/logo_description"
+        app:srcCompat="@drawable/ic_cscmonavenir_logo1" />
 
     <LinearLayout
         android:id="@+id/login_form"
@@ -31,7 +30,7 @@
         android:layout_weight="0"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingTop="100dp">
+        android:paddingTop="70dp">
 
         <TextView
             android:id="@+id/textView"
@@ -39,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:text="Portail des Élèves"
+            android:text="@string/base_portail_text"
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="32sp"
@@ -50,13 +49,14 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             app:hintEnabled="false">
+
             <EditText
                 android:id="@+id/uname"
                 android:layout_width="300dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:background="#ededed"
-                android:hint="Username"
+                android:hint="@string/prompt_username"
                 android:includeFontPadding="true"
                 android:inputType="text"
                 android:maxLines="1"
@@ -82,7 +82,7 @@
                 android:layout_width="300dp"
                 android:layout_height="50dp"
                 android:background="#ededed"
-                android:hint="Password"
+                android:hint="@string/prompt_password"
                 android:imeActionId="6"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified"
@@ -92,9 +92,9 @@
                 android:paddingStart="8dp"
                 android:paddingTop="5dp"
                 android:singleLine="true"
-                android:textSize="20sp"
                 android:textColor="#111111"
-                android:textColorHint="#898989" />
+                android:textColorHint="#898989"
+                android:textSize="20sp" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -103,7 +103,7 @@
             style="?android:textAppearanceMediumInverse"
             android:layout_width="300dp"
             android:layout_height="65dp"
-            android:background="#0d2c6c"
+            android:background="@color/colorAccent"
             android:text="@string/action_sign_in_short"
             android:textColor="#FFFFFF"
             android:textSize="22sp"

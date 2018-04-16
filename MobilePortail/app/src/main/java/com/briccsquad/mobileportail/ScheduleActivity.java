@@ -36,6 +36,13 @@ public class ScheduleActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.newsButton).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), NewsActivity.class));
+            }
+        });
+
         findViewById(R.id.gotoLoginButton).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
