@@ -9,3 +9,7 @@ Working Features:
  - displaying grades
  - error handling
  - logout
+
+
+# License
+You may not use, reproduce, distribute, or otherwise benefit from this work.
