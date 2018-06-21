@@ -17,15 +17,14 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.RedirectHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -40,7 +39,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -144,6 +142,12 @@ public class LoginActivity extends AppCompatActivity {
             // form field with an error.
             focusView.requestFocus();
         } else {
+            View focView = getCurrentFocus();
+            if (focView != null) { // Remove keyboard
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(focView.getWindowToken(), 0);
+            }
+
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
@@ -172,8 +176,8 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
 
-            //mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            /*mProgressView.animate().setDuration(shortAnimTime).alpha(
+            /*mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
                     show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -207,6 +211,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         private Document loadPage(final String extra){
+
             try {
                 Document tmp = Jsoup.connect("https://apps.cscmonavenir.ca/PortailEleves/index.aspx?ReturnUrl=" + extra)
                         .data(paramDict)

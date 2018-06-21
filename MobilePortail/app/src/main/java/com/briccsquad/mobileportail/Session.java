@@ -1,7 +1,5 @@
 package com.briccsquad.mobileportail;
 
-import net.sf.andpdf.pdfviewer.PdfViewerActivity;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

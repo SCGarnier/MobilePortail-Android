@@ -12,9 +12,8 @@
     <string name="action_logout">Terminé</string>
     <string name="class_avg">Moyenne</string>
     <string name="class_name">Nom du Cours</string>
-    <!--Other stuff-->
-    <string name="urlInfoEcole">https://apps.csdccs.edu.on.ca/PortailEleves/InfoEcole.aspx</string>
-    <string name="urlSCG_site">https://esscg.cscmonavenir.ca/</string>
+
+    <!--<string name="urlInfoEcole">https://apps.csdccs.edu.on.ca/PortailEleves/InfoEcole.aspx</string>-->
 
 
     <!--Layout Stuff-->

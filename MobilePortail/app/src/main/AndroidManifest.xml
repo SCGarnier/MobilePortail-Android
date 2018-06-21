@@ -30,7 +30,8 @@
             android:label="@string/title_activity_class_notes"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".SummaryViewActivity" />
-        <activity android:name=".ScheduleActivity"></activity>
+        <activity android:name=".ScheduleActivity" />
+        <activity android:name=".NewsActivity" />
     </application>
 
 </manifest>

@@ -46,7 +46,7 @@ public class ScheduleActivity extends AppCompatActivity {
         findViewById(R.id.gotoLoginButton).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                finish();
             }
         });
     }
