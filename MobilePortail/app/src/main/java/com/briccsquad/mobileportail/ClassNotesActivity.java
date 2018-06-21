@@ -22,23 +22,6 @@ import java.util.ArrayList;
 public class ClassNotesActivity extends AppCompatActivity {
     private TableLayout tl;
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.menu_class_notes, menu);
-
-        // Add click listener
-        menu.findItem(R.id.action_logout).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                finish();
-                return false;
-            }
-        });
-
-        return true;
-    }
-
     private void generateTableView(String cinfo, ArrayList<Session.Domain> classDomains, String bgColor){
         // Create table row for displaying text on activity
         TableRow row = new TableRow(this);
@@ -99,7 +82,6 @@ public class ClassNotesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class_notes);
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
         tl = findViewById(R.id.table_layout_notes);
         setup();

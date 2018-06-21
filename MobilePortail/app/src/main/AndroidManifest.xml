@@ -29,7 +29,7 @@
             android:name=".ClassNotesActivity"
             android:label="@string/title_activity_class_notes"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".SummaryViewActivity" />
+        <activity android:name=".SummaryViewActivity" android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ScheduleActivity" />
         <activity android:name=".NewsActivity" />
     </application>

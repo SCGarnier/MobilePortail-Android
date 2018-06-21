@@ -64,10 +64,10 @@ public class NewsActivity extends AppCompatActivity {
                 schoolColour = R.color.bad;
             }
 
-            if (ecoleOuverte.equals(STR_NORM_TRANSPORT)) {
+            if (transportG.equals(STR_NORM_TRANSPORT)) {
                 busColour = R.color.good;
             } else {
-                if (ecoleOuverte.equals(STR_BAD_TRANSPORT)) {
+                if (transportG.equals(STR_BAD_TRANSPORT)) {
                     busColour = R.color.bad;
                 } else {
                     busColour = R.color.bad1;

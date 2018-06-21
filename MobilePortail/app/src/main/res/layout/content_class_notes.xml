@@ -20,22 +20,6 @@
             android:background="#ffffff"
             android:paddingBottom="@dimen/note_special_margin"
             android:paddingTop="@dimen/note_special_margin">
-
-            <TextView
-                style="@style/TextAppearance.AppCompat.Medium"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:text="Cours"
-                android:textAlignment="center" />
-
-            <TextView
-                style="@style/TextAppearance.AppCompat.Medium"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="@string/class_avg"
-                android:textAlignment="center" />
         </TableRow>
 
     </TableLayout>
