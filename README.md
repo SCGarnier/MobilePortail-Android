@@ -7,6 +7,7 @@ Working Features:
  - login with proper screen
  - displaying schedule
  - displaying grades
+ - displaying SCG school and bus status
  - error handling
  - logout
 
