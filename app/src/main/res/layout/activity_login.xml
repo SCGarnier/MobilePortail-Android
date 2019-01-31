@@ -1,7 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="false"
@@ -14,8 +13,14 @@
 
     <!-- Login progress -->
 
+    <ProgressBar
+        android:id="@+id/progressBarLogin"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
     <ImageView
-        android:id="@+id/imageView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -60,9 +65,9 @@
                 android:includeFontPadding="true"
                 android:inputType="text"
                 android:maxLines="1"
-                android:paddingBottom="5dp"
                 android:paddingStart="8dp"
                 android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:selectAllOnFocus="false"
                 android:singleLine="true"
                 android:textColor="#111111"
@@ -88,9 +93,9 @@
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:paddingBottom="5dp"
                 android:paddingStart="8dp"
                 android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:singleLine="true"
                 android:textColor="#111111"
                 android:textColorHint="#898989"

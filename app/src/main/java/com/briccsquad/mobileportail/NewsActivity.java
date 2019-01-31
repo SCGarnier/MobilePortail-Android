@@ -1,10 +1,10 @@
 package com.briccsquad.mobileportail;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.TextView;
 
 import org.jsoup.Jsoup;
@@ -15,17 +15,28 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+// FIXME only displays garnier bus transport
 public class NewsActivity extends AppCompatActivity {
     private static final String STR_OPEN_SCHOOL = "École ouverte";
     private static final String STR_NORM_TRANSPORT = "Transport normal";
     private static final String STR_BAD_TRANSPORT = "Transport annulé";
     private static final String CSC_WEBSITE = "https://esscg.cscmonavenir.ca/";
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_news);
+
+        // Get bus availability
+        new InfoFetcher(this).execute(CSC_WEBSITE);
+    }
+
     private static class InfoFetcher extends AsyncTask<String, Void, Document[]> {
 
+        @SuppressLint("StaticFieldLeak")
         private final AppCompatActivity app;
 
-        InfoFetcher(AppCompatActivity a){
+        InfoFetcher(AppCompatActivity a) {
             this.app = a;
         }
 
@@ -33,7 +44,7 @@ public class NewsActivity extends AppCompatActivity {
         protected Document[] doInBackground(String... strings) {
             List<Document> arr = new ArrayList<>();
 
-            for(String s: strings){
+            for (String s : strings) {
                 try {
                     Document doc = Jsoup.connect(s)
                             .timeout(3000)
@@ -84,21 +95,5 @@ public class NewsActivity extends AppCompatActivity {
             tv.setText(transportG);
             tv.setBackgroundColor(ContextCompat.getColor(app.getApplicationContext(), busColour));
         }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_news);
-
-        // Get bus availability
-        new InfoFetcher(this).execute(CSC_WEBSITE);
-
-        findViewById(R.id.gotoSchButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
     }
 }
