@@ -33,15 +33,15 @@ public class LoginActivity extends AppCompatActivity {
 
     private static final Logger logger = LoggerManager.getLogger(LoginActivity.class);
 
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
+    // TODO look into potentially allowing user to cancel task
     private UserLoginTask mAuthTask = null;
-    // UI references.
+
+    // UI references
     private EditText mUnameView;
     private EditText mPasswordView;
     private View mLoginFormView;
     private ProgressBar mProgressBarLogin;
+    private View mProgressTextLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressBarLogin = findViewById(R.id.progressBarLogin);
+        mProgressTextLogin = findViewById(R.id.progressInfoText);
     }
 
     /**
@@ -116,13 +117,13 @@ public class LoginActivity extends AppCompatActivity {
             // form field with an error.
             focusView.requestFocus();
         } else {
-            View focView = getCurrentFocus();
+            View userFocusTarget = getCurrentFocus();
 
             // Remove keyboard
-            if (focView != null) {
+            if (userFocusTarget != null) {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
-                    imm.hideSoftInputFromWindow(focView.getWindowToken(), 0);
+                    imm.hideSoftInputFromWindow(userFocusTarget.getWindowToken(), 0);
                 }
             }
 
@@ -150,6 +151,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         mProgressBarLogin.setVisibility(show ? View.VISIBLE : View.GONE);
+        mProgressTextLogin.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     /**
@@ -173,20 +175,26 @@ public class LoginActivity extends AppCompatActivity {
             StreamProvider sp = new StreamProvider(getApplicationContext(), lc);
             ProfileGenerator profileGenerator = new ProfileGenerator(sp);
 
-            if (!sp.hasValidCrendentials()) {
-                return false;
-            }
-
             return profileGenerator.generateProfile(new ProfileGenerator.ProgressUpdater() {
 
                 @Override
-                public void update(int p) {
-                    mProgressBarLogin.setProgress(p);
+                public void update(final int p) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mProgressBarLogin.setProgress(p);
+                        }
+                    });
                 }
 
                 @Override
-                public void setMax(int m) {
-                    mProgressBarLogin.setMax(m);
+                public void setMax(final int m) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mProgressBarLogin.setMax(m);
+                        }
+                    });
                 }
             });
         }
@@ -194,15 +202,33 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-            showProgress(false);
+
+            // Clear the progress bar when done in case somebody else logs in afterwards
+            mProgressBarLogin.setProgress(0);
+
+            // Clear the password for next user to log in without any security issues
+            mPasswordView.setText("");
 
             if (!success) {
+                showProgress(false);
+
+                // Tell the user that something went wrong
+                // TODO would be nice to be a bit more informative
                 new AlertDialog.Builder(LoginActivity.this)
                         .setTitle(getString(R.string.app_name))
                         .setMessage(getString(R.string.err_try_again))
-                        .setPositiveButton(getString(android.R.string.ok), null).show();
+                        .setPositiveButton(getString(android.R.string.ok), null)
+                        .show();
             } else {
+
+                // Clear the name field here because chances are the next person will want to enter
+                // something other than what is inside said field
+                mUnameView.setText("");
+
                 startActivity(new Intent(getApplicationContext(), ScheduleActivity.class));
+
+                // Avoid a UI flicker by disabling progress afterwards
+                showProgress(false);
             }
         }
 

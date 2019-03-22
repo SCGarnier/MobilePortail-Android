@@ -40,7 +40,7 @@ public class PortalUserGrade {
         pdfLink = jsUrl;
     }
 
-    public String getSummaryLink(){
+    public String getSummaryLink() {
         return pdfLink;
     }
 

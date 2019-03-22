@@ -12,10 +12,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * A parser that specializes in extracting information about a student
+ * from the portail's web pages.
+ */
 class PageParser {
+
     /**
      * A RegExp used to extract the necessary URL for PDFs from the HTML link source.
      */
@@ -24,7 +30,7 @@ class PageParser {
     private final Map<PortalPage, Document> pageDocMap = new HashMap<>();
 
     public PageParser(@NonNull Map<PortalPage, String> pageData) {
-        if(pageData.size() < PortalPage.values().length - 1){
+        if (pageData.size() < PortalPage.values().length - 1) {
             throw new IllegalArgumentException("Given map of pages was not complete!");
         }
 
@@ -33,20 +39,28 @@ class PageParser {
         }
     }
 
-    private Elements selectGradeLinks(){
-        return pageDocMap.get(PortalPage.GRADES_TABLE).select("#Table1 a");
+    private Elements selectGradeLinks() {
+        return Objects.requireNonNull(pageDocMap.get(PortalPage.GRADES_TABLE))
+                .select("#Table1 a");
     }
 
-    private Elements selectTeacherElements(){
-        return pageDocMap.get(PortalPage.GRADES_TABLE).select("#Table1 div.text");
+    private Elements selectTeacherElements() {
+        return Objects.requireNonNull(pageDocMap.get(PortalPage.GRADES_TABLE))
+                .select("#Table1 div.text");
     }
 
-    public PortalUser createProfile() {
+    /**
+     * Creates a profile of the associated user by parsing the downloaded web pages.
+     *
+     * @return A {@link PortalUser} describing the associated user.
+     * @param username
+     */
+    public PortalUser createProfile(String username) {
         // Hold off on people with domains...
         // TODO remove this restriction
-        if(pageDocMap.get(PortalPage.GRADES_TABLE)
+        if (Objects.requireNonNull(pageDocMap.get(PortalPage.GRADES_TABLE))
                 .selectFirst("#Table1 > tbody > tr:nth-child(1) > td:nth-child(2)")
-                .text().contentEquals("Domaine")){
+                .text().contentEquals("Domaine")) {
             return null;
         }
 
@@ -54,15 +68,15 @@ class PageParser {
         List<String> classList = new ArrayList<>();
 
         Elements classElems = selectTeacherElements();
-        for(Element elem: classElems){
+        for (Element elem : classElems) {
             classList.add(elem.child(0).text() + "\n" + elem.ownText());
         }
 
-        for(int i = 0, l = classElems.size(); i < l; i++){
+        for (int i = 0, l = classElems.size(); i < l; i++) {
             Element elemClass = classElems.get(i);
             Element elem = elemClass.parent().parent().selectFirst("a");
 
-            if(elem == null) continue;
+            if (elem == null) continue;
 
             PortalUserGrade p = new PortalUserGrade(i);
             p.setDomainName(PortalUserGrade.MAIN_DOMAIN_NAME);
@@ -79,26 +93,46 @@ class PageParser {
         }
 
         PortalUser user = new PortalUser(classList, gradeList,
-                pageDocMap.get(PortalPage.SCHOOL_INFO)
-                        .select("#LNomEcole").text());
+                Objects.requireNonNull(pageDocMap.get(PortalPage.SCHOOL_INFO))
+                        .select("#LNomEcole").text(), username);
 
         setupSchedule(user);
         return user;
     }
 
     private void setupSchedule(PortalUser p) {
-        Elements trList = pageDocMap.get(PortalPage.SCHEDULE).select("table.text tr");
+        Elements trList = Objects.requireNonNull(pageDocMap.get(PortalPage.SCHEDULE))
+                .select("table.text tr");
 
-        // TODO compute value from schedule
-        int activeDay = 1;
+        int activeDay = 0;
+
+        Elements testRow = trList.get(1).select("td");
+
+        // Compute active day from schedule style rules, since it's the only hint
+        // that the day changed...
+        for (int i = 1, len = testRow.size(); i < len; i++) {
+            if (!testRow.get(i).attr("bgcolor").isEmpty()) {
+                activeDay = i;
+                break;
+            }
+        }
+
+        // No school today?
+        if (activeDay == 0) {
+            return;
+        }
 
         for (int i = 1, len = trList.size(); i < len; i++) {
-            List<TextNode> wholeTextList = trList.get(i).select("td").get(activeDay).textNodes();
-            if(!wholeTextList.isEmpty()){
+            Element periodElem = trList.get(i).select("td").get(activeDay).child(0);
+            List<TextNode> wholeTextList = periodElem.textNodes();
+
+            // Attempt to decode the schedule data, otherwise just
+            // try not to crash
+            try {
                 p.addPeriod(wholeTextList.get(0).text().trim(),
                         wholeTextList.get(1).text().trim(),
                         wholeTextList.get(2).text().trim());
-            } else {
+            } catch (Exception e) {
                 p.addPeriod("???", "???", "???");
             }
         }

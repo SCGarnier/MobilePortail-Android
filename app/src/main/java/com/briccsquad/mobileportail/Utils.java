@@ -15,7 +15,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * A collection of utility functions that fill the void.
+ * A collection of utility functions that fill the void that the
+ * targeted Java version couldn't.
+ *
+ * @author xprogram
  */
 public final class Utils {
     private static final int BYTE_BUFFER_SIZE = 1024;
@@ -63,15 +66,5 @@ public final class Utils {
         while ((bytesRead = input.read(buffer)) != -1) {
             output.write(buffer, 0, bytesRead);
         }
-    }
-
-    public static void recursiveDelete(File f) {
-        if (f.isDirectory()) {
-            for (File c : f.listFiles()) {
-                recursiveDelete(c);
-            }
-        }
-
-        f.delete();
     }
 }

@@ -5,24 +5,20 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.briccsquad.mobileportail.Utils;
+import com.koushikdutta.ion.Ion;
 import com.noveogroup.android.log.Logger;
 import com.noveogroup.android.log.LoggerManager;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.jsoup.Jsoup;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class StreamProvider {
 
@@ -32,29 +28,32 @@ public class StreamProvider {
      * Stores the map of POST parameters to send to the portail server
      * to fetch pages about a specific user.
      */
-    private final Map<String, String> paramDict = new HashMap<>();
+    private final Map<String, List<String>> paramDict = new HashMap<>();
 
     private final LoginCredentials loginCredentials;
-    private final HttpClient httpClient = new DefaultHttpClient();
-    private final Context appActivity;
+    private final Context providerContext;
 
-    public StreamProvider(@NonNull Context activity, @NonNull LoginCredentials lc) {
+    public StreamProvider(@NonNull Context context, @NonNull LoginCredentials lc) {
         loginCredentials = lc;
-        appActivity = activity;
+        providerContext = context;
 
         // Fill the map with constant parameters the server checks for
-        paramDict.put("__VIEWSTATE", "/wEPDwULLTE1OTEzODk5NDRkZHeWIDblnhXfWVgudGFcvrqUrsa8oUjUBNqAwiyC5bQZ");
-        paramDict.put("__VIEWSTATEGENERATOR", "3738FB10");
+        paramDict.put("__VIEWSTATE",
+                Collections.singletonList("/wEPDwULLTE1OTEzODk5NDRkZHeWIDblnhXfWVgudGFcvrqUrsa8oUjUBNqAwiyC5bQZ"));
+        paramDict.put("__VIEWSTATEGENERATOR",
+                Collections.singletonList("3738FB10"));
         paramDict.put("__EVENTVALIDATION",
-                "/wEdAAS/EmKn67wLWprMxhcvNZYzNV4T48EJ76cvY4cUAzjjnR0O4L6f0pzi6oGvFfSn1SztaUkzhlzahAalhIckp3krG4fQXm17dVV5HUDhFMYg3hg06HAD0C/01YYOsiBthV8=");
-        paramDict.put("Blogin", "Entrer");
+                Collections.singletonList("/wEdAAS/EmKn67wLWprMxhcvNZYzNV4T48EJ76cvY4cUAzjjnR0O4L6f0p" +
+                        "zi6oGvFfSn1SztaUkzhlzahAalhIckp3krG4fQXm17dVV5HUDhFMY" +
+                        "g3hg06HAD0C/01YYOsiBthV8="));
+        paramDict.put("Blogin", Collections.singletonList("Entrer"));
 
         // Add credentials to the mix
-        paramDict.put("Tlogin", lc.getUsername());
-        paramDict.put("Tpassword", lc.getPassword());
+        paramDict.put("Tlogin", Collections.singletonList(lc.getUsername()));
+        paramDict.put("Tpassword", Collections.singletonList(lc.getPassword()));
     }
 
-    public boolean hasValidCrendentials() {
+    boolean hasValidCrendentials() {
         try (InputStream inputStream = fetchStream(PortalPage.GRADES_TABLE.getServerPath())) {
             String res = new String(Utils.readStream(inputStream), StandardCharsets.UTF_8);
             return !Jsoup.parse(res).title().contains("portail");
@@ -64,33 +63,29 @@ public class StreamProvider {
         }
     }
 
-    public InputStream fetchStream(@NonNull String reqPath) {
-        String processedPath = Uri.encode(reqPath);
-        String fullUrl = "https://apps.cscmonavenir.ca/PortailEleves/index.aspx?ReturnUrl="
-                + processedPath;
+    InputStream fetchStream(@NonNull String reqPath) {
 
-        HttpPost httpPost = new HttpPost(fullUrl);
-
-        ArrayList<NameValuePair> modParams = new ArrayList<>();
-        for (Map.Entry<String, String> entry : paramDict.entrySet()) {
-            modParams.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
-        }
+        // Request with page as GET parameter
+        String fullUrl = "https://apps.cscmonavenir.ca/PortailEleves/index.aspx?ReturnUrl=" +
+                Uri.encode(reqPath);
 
         try {
-            httpPost.setEntity(new UrlEncodedFormEntity(modParams));
-            HttpResponse response = httpClient.execute(httpPost);
-            return response.getEntity().getContent();
-        } catch (IOException e) {
+            return Ion.with(providerContext)
+                    .load(fullUrl)
+                    .setBodyParameters(paramDict)
+                    .asInputStream()
+                    .get();
+        } catch (ExecutionException | InterruptedException e) {
             logger.e("Failed to fetch path: " + reqPath, e);
             return null;
         }
     }
 
-    public LoginCredentials getLoginCredentials() {
+    LoginCredentials getLoginCredentials() {
         return loginCredentials;
     }
 
-    public Context getContext() {
-        return appActivity;
+    Context getContext() {
+        return providerContext;
     }
 }

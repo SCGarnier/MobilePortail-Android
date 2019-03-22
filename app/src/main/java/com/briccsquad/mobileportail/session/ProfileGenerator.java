@@ -23,26 +23,42 @@ public class ProfileGenerator {
     }
 
     public boolean generateProfile(ProgressUpdater cb) {
+        if (!streamProvider.hasValidCrendentials()) {
+            return false;
+        }
+
         HashMap<PortalPage, String> pageData = new HashMap<>();
-        if(cb != null) cb.setMax(PortalPage.values().length - 1);
+
+        if (cb != null) {
+            cb.setMax(PortalPage.values().length - 1);
+        }
+
         int progress = 0;
-        for (PortalPage p : PortalPage.values()) {
-            try (InputStream inputStream = streamProvider.fetchStream(p.getServerPath())) {
+
+        // Download each page specified in PortalPage enum
+        for (PortalPage portalPage : PortalPage.values()) {
+            try (InputStream inputStream = streamProvider.fetchStream(portalPage.getServerPath())) {
                 byte[] txtBuf = Utils.readStream(inputStream);
                 String htmlContent = new String(txtBuf, StandardCharsets.UTF_8);
-                pageData.put(p, htmlContent);
-                if(cb != null) cb.update(++progress);
+                pageData.put(portalPage, htmlContent);
+
+                if (cb != null) {
+                    cb.update(++progress);
+                }
             } catch (IOException e) {
                 logger.e("Couldn't fully read HTML from provider", e);
                 return false;
             }
         }
 
+        // Scrap the downloaded pages for extra information
         PageParser pageParser = new PageParser(pageData);
-        PortalUser.setCurrent(pageParser.createProfile());
+        PortalUser.setCurrent(pageParser.createProfile(streamProvider.getLoginCredentials().getUsername()));
 
         Context ctx = streamProvider.getContext();
         List<String> arr = PortalUser.getCurrent().getSummaryLinks();
+
+        // Download each summary PDF, storing them on the filesystem
         for (int i = 0, l = arr.size(); i < l; i++) {
             String link = arr.get(i);
             String summaryFilename = streamProvider.getLoginCredentials().toString() +
@@ -76,6 +92,7 @@ public class ProfileGenerator {
 
     public interface ProgressUpdater {
         void update(int p);
+
         void setMax(int m);
     }
 }

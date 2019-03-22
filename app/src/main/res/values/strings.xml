@@ -13,10 +13,10 @@
     <string name="class_avg">Moyenne</string>
     <string name="class_name">Nom du Cours</string>
 
-    <!--Layout Stuff-->
     <string name="button_signout">Déconnexion</string>
-    <string name="logo_description">Logo du Conseil Scolaire monAvenir</string>
+    <string name="logo_description">Logo du Conseil Scolaire MonAvenir</string>
 
+    <!-- News about bus & school availability -->
     <string name="school_open_txt">École Ouverte</string>
     <string name="school_closed_txt">École Fermée</string>
     <string name="bus_normal_txt">Transport Normal</string>
@@ -26,5 +26,9 @@
     <string name="base_portail_text">Portail des Élèves</string>
     <string name="see_class_results">Voir résultats de classe</string>
     <string name="school_news">Nouvelles</string>
+    <string name="open_in_site">Ouvrir dans le site de l\'école</string>
+    <string name="loading_login_data">Chargement des données…</string>
+    <string name="info_no_class_today">Aucun cours aujoud\'hui.</string>
+    <string name="connected_as">Connecté en tant que:</string>
 
 </resources>

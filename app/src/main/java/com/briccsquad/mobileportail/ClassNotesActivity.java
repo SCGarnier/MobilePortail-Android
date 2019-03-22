@@ -25,10 +25,12 @@ public class ClassNotesActivity extends AppCompatActivity {
 
     private void setup() {
         PortalUser user = PortalUser.getCurrent();
-        for(int i = 0, l = user.getClassListSize(); i < l; i++){
+        for (int i = 0, l = user.getClassListSize(); i < l; i++) {
             List<PortalUserGrade> gradeList = user.getGradesForClass(i);
 
-            if(gradeList.isEmpty()) continue;
+            if (gradeList.isEmpty()){
+                continue;
+            }
 
             // TODO support domains in layout
             PortalUserGrade grade = gradeList.get(0);
@@ -41,13 +43,13 @@ public class ClassNotesActivity extends AppCompatActivity {
             ((TextView) v.findViewById(R.id.teacherGradeName)).setText(info[1]);
 
             final String summaryFile = grade.getSummaryFile();
-            if(summaryFile != null){
+            if (summaryFile != null) {
                 v.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent itt = new Intent(getApplicationContext(), SummaryViewActivity.class);
-                        itt.putExtra(SummaryViewActivity.OPT_FNAME, summaryFile);
-                        startActivity(itt);
+                        Intent intent = new Intent(getApplicationContext(), SummaryViewActivity.class);
+                        intent.putExtra(SummaryViewActivity.OPT_FNAME, summaryFile);
+                        startActivity(intent);
                     }
                 });
             }
